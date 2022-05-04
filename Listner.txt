@@ -1,0 +1,125 @@
+package TestNgPractice;
+
+import static org.testng.Assert.assertFalse;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+@Listeners(TestNgPractice.TestNgListnerclass.class)
+public class TestNgListenerTestCases {
+
+	public static WebDriver driver;
+
+	@Test
+	public void Initailzation() {
+
+		System.setProperty("webdriver.chrome.driver",
+				"E:\\New folder\\DriverBrowser\\chromedriver_win32\\chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		
+		driver.get("https://www.facebook.com/");
+
+	}
+	@Test(priority = 1 ,dataProvider = "testdata")
+	public void Login(String s , String v) throws InterruptedException {
+
+		driver.findElement(By.xpath("//*[@id = 'email']")).sendKeys(s);
+		driver.findElement(By.xpath("//*[@id = 'pass']")).sendKeys(v);
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//*[@name = 'login']")).click();
+		driver.navigate().back();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//*[@id = 'email']")).clear();
+		Assert.assertFalse(true);
+
+	}
+	
+	@Test(priority = 2, dependsOnMethods ="Login")
+	public void Rest() throws InterruptedException{
+
+		driver.navigate().back();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//*[@id = 'email']")).clear();
+	
+
+	}
+	
+	
+	@DataProvider
+	public String[][] testdata(){
+		String [][] data = {{"9766155808","loveguru@123"},{"Onkar","Onkar@BreakupGuru"}};
+		return data;
+		
+	}
+	
+
+}
+-----------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+
+package TestNgPractice;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.io.FileHandler;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+
+public class TestNgListnerclass extends TestNgListenerTestCases implements ITestListener{
+	
+    static int i = 3;
+    
+	@Override
+	public void onTestStart(ITestResult result) {
+		System.out.println("onTestStart");
+	}
+
+	@Override
+	public void onTestSuccess(ITestResult result) {
+		System.out.println("onTestSuccess");
+	}
+	
+	public static void takeScreenshot(WebDriver driver ) {
+
+		TakesScreenshot ss = (TakesScreenshot) driver;
+		
+		do{	
+		File source = ss.getScreenshotAs(OutputType.FILE);
+		File destination = new File(System.getProperty("user.dir")+"\\Screenshots\\shot"+i+".png");
+		try {
+			FileHandler.copy(source,destination);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		i++;
+
+		}while(false);
+
+	}
+
+	@Override
+	public void onTestFailure(ITestResult result ) {
+		System.out.println("onTestFailure");
+			
+		takeScreenshot(driver);
+		
+	}
+
+	@Override
+	public void onTestSkipped(ITestResult result) {
+		System.out.println("onTestSkipped");
+	}
+
+}
