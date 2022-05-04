@@ -1,0 +1,63 @@
+String path = "";
+File file = new File(path);
+FileInputstream fis = new FileInputstream(file);
+XSSFWorkBook wb = new XSSFWorkbook(fis);
+XSSFsheet sheet = wb.getSheetAt(0);
+String i = sheet.getRow(r).getCell(c).getStringCellValue();
+return i;
+
+sheet.getRow(r).createCell(c).setCellValue(i);
+FileOutputStream fos = new FileOutputStream (path);
+wb.write(fos);
+
+File src = ((TakeScreenshot)driver).getScreenshotAs(OutputType.FILE);
+File dest = File(System.getProperty("user.dir" + "\\screenshot\\"+filename+".png"));
+FileHandler.copy(src,dest);
+
+
+//*[@id="cp1"]
+/html/body/div[3]/div[3]/div[1]/table/tbody/tr[1]/td[1]/div
+
+
+select max(salary) from emp
+select max(salary) from emp where salary < (select max(salary) from emp);
+
+select salary from(select salary from emp orderBy salary DESC limit 2) as emp orderBy salary limit 1;
+
+
+// It will return the parent window name as a String
+String parent=driver.getWindowHandle();
+
+Set<String>s=driver.getWindowHandles();
+
+// Now iterate using Iterator
+Iterator<String> I1= s.iterator();
+
+while(I1.hasNext())
+{
+
+String child_window=I1.next();
+
+
+if(!parent.equals(child_window))
+{
+driver.switchTo().window(child_window);
+
+System.out.println(driver.switchTo().window(child_window).getTitle());
+
+driver.close();
+}
+
+}
+//switch to the parent window
+driver.switchTo().window(parent);
+
+}
+}
+
+
+
+// html table - id => students <table id='students'>
+    // n rows, 4 columns - roll nu, name, total %, pass/fail
+    // 3rd column > 50%, 4th column should have pass. else should contain fail
+    
